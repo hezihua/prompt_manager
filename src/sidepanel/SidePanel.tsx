@@ -3,6 +3,7 @@ import { Plus, Search, Filter, Star, Clock } from 'lucide-react';
 import type { PromptProject } from '@/types/prompt';
 import { storage } from '@/utils/storage';
 import { PromptCard } from '@/components/PromptCard';
+import { PromptEditor } from '@/components/PromptEditor';
 
 type SortBy = 'recent' | 'starred' | 'title';
 
@@ -12,6 +13,8 @@ export const SidePanel: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<SortBy>('recent');
   const [loading, setLoading] = useState(true);
+  const [showEditor, setShowEditor] = useState(false);
+  const [editingProjectId, setEditingProjectId] = useState<string | undefined>();
 
   // 加载项目列表
   const loadProjects = async () => {
@@ -90,10 +93,27 @@ export const SidePanel: React.FC = () => {
     }
   };
 
-  // 编辑项目（MVP 暂时只是打印日志）
+  // 编辑项目
   const handleEdit = (project: PromptProject) => {
-    console.log('Edit project:', project);
-    alert('编辑功能将在下一版本中实现');
+    setEditingProjectId(project.id);
+    setShowEditor(true);
+  };
+
+  // 新建项目
+  const handleCreate = () => {
+    setEditingProjectId(undefined);
+    setShowEditor(true);
+  };
+
+  // 关闭编辑器
+  const handleCloseEditor = () => {
+    setShowEditor(false);
+    setEditingProjectId(undefined);
+  };
+
+  // 保存后刷新
+  const handleSave = async () => {
+    await loadProjects();
   };
 
   return (
@@ -104,7 +124,7 @@ export const SidePanel: React.FC = () => {
           <h1 className="text-2xl font-bold text-gray-800">Prompt 管理器</h1>
           <button
             className="btn-primary flex items-center gap-2"
-            onClick={() => alert('新建功能将在下一版本中实现')}
+            onClick={handleCreate}
           >
             <Plus size={20} />
             新建
@@ -202,6 +222,15 @@ export const SidePanel: React.FC = () => {
         {projects.filter((p) => p.starred).length > 0 &&
           ` · ${projects.filter((p) => p.starred).length} 个收藏`}
       </div>
+
+      {/* 编辑器模态框 */}
+      {showEditor && (
+        <PromptEditor
+          projectId={editingProjectId}
+          onClose={handleCloseEditor}
+          onSave={handleSave}
+        />
+      )}
     </div>
   );
 };

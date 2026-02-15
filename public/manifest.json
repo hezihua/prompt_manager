@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "AI Prompt 管理器",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "强大的 AI 绘图 Prompt 管理工具，支持标签系统、版本控制和一键复制",
   "icons": {
     "16": "icons/icon-16.svg",

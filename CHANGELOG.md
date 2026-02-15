@@ -5,7 +5,34 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
-## [Unreleased]
+## [0.2.0] - 2026-01-21
+
+### 新增
+- ✨ **可视化标签编辑器** - 完整的 Prompt 编辑界面
+- ✨ **拖拽排序** - 使用 @dnd-kit 实现标签拖拽
+- ✨ **权重滑块** - 直观的权重调节（0.5-2.0）
+- ✨ **标签库** - 40+ 预设标签，分类浏览
+- ✨ **实时预览** - 支持 Midjourney 和 Stable Diffusion 格式
+- ✨ **新建功能** - 从零创建 Prompt
+- ✨ **编辑功能** - 修改现有 Prompt
+
+### 改进
+- 🎨 更新侧边栏，集成编辑器模态框
+- ⚡ 优化用户体验，操作更流畅
+- 📝 添加中文翻译到预设标签
+
+### 技术
+- 📦 新增依赖: @dnd-kit/core, @dnd-kit/sortable, @dnd-kit/utilities
+- 💻 新增组件: TagEditor, TagLibrary, PromptEditor
+- 🔧 TypeScript 严格模式通过
+
+### 文档
+- 📚 添加 WEEK2_SUMMARY.md
+- 📝 更新 CHANGELOG.md
+
+---
+
+## [0.1.0] - 2026-01-20
 
 ### 计划中
 - 可视化标签编辑器
