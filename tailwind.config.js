@@ -3,6 +3,7 @@ export default {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
+  darkMode: 'class', // 启用 class 模式的暗黑主题
   theme: {
     extend: {
       colors: {

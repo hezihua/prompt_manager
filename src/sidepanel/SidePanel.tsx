@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Plus, Search, Filter, Star, Clock } from 'lucide-react';
+import { Plus, Search, Filter, Star, Clock, Settings } from 'lucide-react';
 import type { PromptProject, PromptSnapshot } from '@/types/prompt';
 import { storage } from '@/utils/storage';
 import { VersionManager } from '@/utils/version-manager';
@@ -7,6 +7,7 @@ import { PromptCard } from '@/components/PromptCard';
 import { PromptEditor } from '@/components/PromptEditor';
 import { TimelineView } from '@/components/TimelineView';
 import { CompareView } from '@/components/CompareView';
+import { SettingsPanel } from '@/components/SettingsPanel';
 
 type SortBy = 'recent' | 'starred' | 'title';
 
@@ -24,6 +25,9 @@ export const SidePanel: React.FC = () => {
     snapshot1: PromptSnapshot;
     snapshot2: PromptSnapshot;
   } | null>(null);
+  const [showSettings, setShowSettings] = useState(false);
+  const [selectionMode, setSelectionMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   // 加载项目列表
   const loadProjects = async () => {
@@ -153,31 +157,136 @@ export const SidePanel: React.FC = () => {
     setCompareSnapshots({ snapshot1, snapshot2 });
   };
 
+  // 批量操作
+  const toggleSelection = (id: string) => {
+    const newSelected = new Set(selectedIds);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedIds(newSelected);
+  };
+
+  const selectAll = () => {
+    const allIds = new Set(filteredProjects.map((p) => p.id));
+    setSelectedIds(allIds);
+  };
+
+  const clearSelection = () => {
+    setSelectedIds(new Set());
+    setSelectionMode(false);
+  };
+
+  const handleBatchDelete = async () => {
+    if (selectedIds.size === 0) return;
+    
+    if (!confirm(`确定要删除选中的 ${selectedIds.size} 个 Prompt 吗？`)) return;
+
+    try {
+      for (const id of selectedIds) {
+        await storage.deleteProject(id);
+      }
+      await loadProjects();
+      clearSelection();
+      alert('批量删除成功！');
+    } catch (error) {
+      console.error('Failed to batch delete:', error);
+      alert('批量删除失败，请重试');
+    }
+  };
+
+  const handleBatchStar = async () => {
+    if (selectedIds.size === 0) return;
+
+    try {
+      for (const id of selectedIds) {
+        await storage.updateProject(id, { starred: true });
+      }
+      await loadProjects();
+      clearSelection();
+      alert('批量收藏成功！');
+    } catch (error) {
+      console.error('Failed to batch star:', error);
+      alert('批量收藏失败，请重试');
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
       {/* 头部 */}
-      <div className="bg-white border-b border-gray-200 p-4 sticky top-0 z-10">
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4 sticky top-0 z-10">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-bold text-gray-800">Prompt 管理器</h1>
-          <button
-            className="btn-primary flex items-center gap-2"
-            onClick={handleCreate}
-          >
-            <Plus size={20} />
-            新建
-          </button>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Prompt 管理器</h1>
+          <div className="flex gap-2">
+            {!selectionMode && (
+              <>
+                <button
+                  className="px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors text-gray-700 dark:text-gray-300"
+                  onClick={() => setSelectionMode(true)}
+                  title="批量操作"
+                >
+                  选择
+                </button>
+                <button
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                  onClick={() => setShowSettings(true)}
+                  title="设置"
+                >
+                  <Settings size={20} className="text-gray-600 dark:text-gray-400" />
+                </button>
+                <button
+                  className="btn-primary flex items-center gap-2"
+                  onClick={handleCreate}
+                >
+                  <Plus size={20} />
+                  新建
+                </button>
+              </>
+            )}
+            {selectionMode && (
+              <>
+                <button
+                  className="px-3 py-2 text-sm bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
+                  onClick={selectAll}
+                >
+                  全选
+                </button>
+                <button
+                  className="px-3 py-2 text-sm bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors"
+                  onClick={handleBatchStar}
+                  disabled={selectedIds.size === 0}
+                >
+                  收藏 ({selectedIds.size})
+                </button>
+                <button
+                  className="px-3 py-2 text-sm bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
+                  onClick={handleBatchDelete}
+                  disabled={selectedIds.size === 0}
+                >
+                  删除 ({selectedIds.size})
+                </button>
+                <button
+                  className="px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors text-gray-700 dark:text-gray-300"
+                  onClick={clearSelection}
+                >
+                  取消
+                </button>
+              </>
+            )}
+          </div>
         </div>
 
         {/* 搜索栏 */}
         <div className="relative mb-3">
           <Search
             size={20}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500"
           />
           <input
             type="text"
             placeholder="搜索 Prompt..."
-            className="input pl-10"
+            className="input pl-10 dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600 dark:placeholder-gray-400"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -248,6 +357,9 @@ export const SidePanel: React.FC = () => {
                 onToggleStar={handleToggleStar}
                 onEdit={handleEdit}
                 onViewHistory={handleViewHistory}
+                selectionMode={selectionMode}
+                selected={selectedIds.has(project.id)}
+                onToggleSelection={toggleSelection}
               />
             ))}
           </div>
@@ -306,6 +418,9 @@ export const SidePanel: React.FC = () => {
           onClose={() => setCompareSnapshots(null)}
         />
       )}
+
+      {/* 设置面板 */}
+      {showSettings && <SettingsPanel onClose={() => setShowSettings(false)} />}
     </div>
   );
 };

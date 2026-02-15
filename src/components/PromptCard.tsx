@@ -10,6 +10,9 @@ interface PromptCardProps {
   onToggleStar: (id: string) => void;
   onEdit: (project: PromptProject) => void;
   onViewHistory?: (project: PromptProject) => void;
+  selectionMode?: boolean;
+  selected?: boolean;
+  onToggleSelection?: (id: string) => void;
 }
 
 export const PromptCard: React.FC<PromptCardProps> = ({
@@ -18,6 +21,9 @@ export const PromptCard: React.FC<PromptCardProps> = ({
   onToggleStar,
   onEdit,
   onViewHistory,
+  selectionMode = false,
+  selected = false,
+  onToggleSelection,
 }) => {
   const [copied, setCopied] = React.useState(false);
 
@@ -45,9 +51,22 @@ export const PromptCard: React.FC<PromptCardProps> = ({
   };
 
   return (
-    <div className="card hover:shadow-md transition-shadow duration-200">
+    <div
+      className={`card hover:shadow-md transition-shadow duration-200 ${
+        selected ? 'ring-2 ring-blue-500' : ''
+      }`}
+      onClick={() => selectionMode && onToggleSelection && onToggleSelection(project.id)}
+    >
       {/* 头部 */}
       <div className="flex items-start justify-between mb-3">
+        {selectionMode && (
+          <input
+            type="checkbox"
+            checked={selected}
+            onChange={() => onToggleSelection && onToggleSelection(project.id)}
+            className="mr-3 mt-1 w-5 h-5 text-blue-500 rounded"
+          />
+        )}
         <div className="flex-1">
           <h3 className="text-lg font-semibold text-gray-800 mb-1">
             {project.title}
@@ -56,16 +75,18 @@ export const PromptCard: React.FC<PromptCardProps> = ({
             <p className="text-sm text-gray-600">{project.description}</p>
           )}
         </div>
-        <button
-          onClick={() => onToggleStar(project.id)}
-          className="ml-2 p-1 hover:bg-gray-100 rounded transition-colors"
-          title={project.starred ? '取消收藏' : '收藏'}
-        >
-          <Star
-            size={20}
-            className={project.starred ? 'fill-yellow-400 text-yellow-400' : 'text-gray-400'}
-          />
-        </button>
+        {!selectionMode && (
+          <button
+            onClick={() => onToggleStar(project.id)}
+            className="ml-2 p-1 hover:bg-gray-100 rounded transition-colors"
+            title={project.starred ? '取消收藏' : '收藏'}
+          >
+            <Star
+              size={20}
+              className={project.starred ? 'fill-yellow-400 text-yellow-400' : 'text-gray-400'}
+            />
+          </button>
+        )}
       </div>
 
       {/* 标签云 */}
@@ -107,49 +128,51 @@ export const PromptCard: React.FC<PromptCardProps> = ({
       )}
 
       {/* 底部操作栏 */}
-      <div className="flex items-center justify-between pt-3 border-t border-gray-200">
-        <span className="text-xs text-gray-500">
-          {formatDate(project.updatedAt)}
-        </span>
-        
-        <div className="flex gap-2">
-          {onViewHistory && (
+      {!selectionMode && (
+        <div className="flex items-center justify-between pt-3 border-t border-gray-200">
+          <span className="text-xs text-gray-500">
+            {formatDate(project.updatedAt)}
+          </span>
+          
+          <div className="flex gap-2">
+            {onViewHistory && (
+              <button
+                onClick={() => onViewHistory(project)}
+                className="p-2 hover:bg-blue-50 rounded transition-colors"
+                title="版本历史"
+              >
+                <History size={16} className="text-blue-600" />
+              </button>
+            )}
             <button
-              onClick={() => onViewHistory(project)}
-              className="p-2 hover:bg-blue-50 rounded transition-colors"
-              title="版本历史"
+              onClick={() => onEdit(project)}
+              className="p-2 hover:bg-gray-100 rounded transition-colors"
+              title="编辑"
             >
-              <History size={16} className="text-blue-600" />
+              <Edit size={16} className="text-gray-600" />
             </button>
-          )}
-          <button
-            onClick={() => onEdit(project)}
-            className="p-2 hover:bg-gray-100 rounded transition-colors"
-            title="编辑"
-          >
-            <Edit size={16} className="text-gray-600" />
-          </button>
-          <button
-            onClick={handleCopy}
-            className={`p-2 rounded transition-colors ${
-              copied ? 'bg-green-100' : 'hover:bg-gray-100'
-            }`}
-            title="复制"
-          >
-            <Copy
-              size={16}
-              className={copied ? 'text-green-600' : 'text-gray-600'}
-            />
-          </button>
-          <button
-            onClick={() => onDelete(project.id)}
-            className="p-2 hover:bg-red-50 rounded transition-colors"
-            title="删除"
-          >
-            <Trash2 size={16} className="text-red-600" />
-          </button>
+            <button
+              onClick={handleCopy}
+              className={`p-2 rounded transition-colors ${
+                copied ? 'bg-green-100' : 'hover:bg-gray-100'
+              }`}
+              title="复制"
+            >
+              <Copy
+                size={16}
+                className={copied ? 'text-green-600' : 'text-gray-600'}
+              />
+            </button>
+            <button
+              onClick={() => onDelete(project.id)}
+              className="p-2 hover:bg-red-50 rounded transition-colors"
+              title="删除"
+            >
+              <Trash2 size={16} className="text-red-600" />
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
