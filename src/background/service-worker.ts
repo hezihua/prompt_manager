@@ -96,7 +96,7 @@ chrome.action.onClicked.addListener((tab) => {
 /**
  * 监听来自其他页面的消息
  */
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   console.log('Message received:', message);
 
   switch (message.type) {

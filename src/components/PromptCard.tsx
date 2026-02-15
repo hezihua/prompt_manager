@@ -1,5 +1,5 @@
 import React from 'react';
-import { Copy, Star, Trash2, Edit, Tag } from 'lucide-react';
+import { Copy, Star, Trash2, Edit, Tag, History } from 'lucide-react';
 import type { PromptProject } from '@/types/prompt';
 import { formatDate, copyToClipboard } from '@/utils/prompt-builder';
 import { PromptBuilder } from '@/utils/prompt-builder';
@@ -9,6 +9,7 @@ interface PromptCardProps {
   onDelete: (id: string) => void;
   onToggleStar: (id: string) => void;
   onEdit: (project: PromptProject) => void;
+  onViewHistory?: (project: PromptProject) => void;
 }
 
 export const PromptCard: React.FC<PromptCardProps> = ({
@@ -16,6 +17,7 @@ export const PromptCard: React.FC<PromptCardProps> = ({
   onDelete,
   onToggleStar,
   onEdit,
+  onViewHistory,
 }) => {
   const [copied, setCopied] = React.useState(false);
 
@@ -111,6 +113,15 @@ export const PromptCard: React.FC<PromptCardProps> = ({
         </span>
         
         <div className="flex gap-2">
+          {onViewHistory && (
+            <button
+              onClick={() => onViewHistory(project)}
+              className="p-2 hover:bg-blue-50 rounded transition-colors"
+              title="版本历史"
+            >
+              <History size={16} className="text-blue-600" />
+            </button>
+          )}
           <button
             onClick={() => onEdit(project)}
             className="p-2 hover:bg-gray-100 rounded transition-colors"

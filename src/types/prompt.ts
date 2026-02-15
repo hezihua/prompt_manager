@@ -58,14 +58,34 @@ export interface PromptProject {
 export interface PromptSnapshot {
   id: string;
   projectId: string;      // 关联的主项目 ID
-  fullString: string;     // 生成时发送给 AI 的完整字符串
-  imageUrl?: string;      // 生成的结果图预览
+  version: number;        // 版本号（从 1 开始）
   
-  // "实验室"数据
+  // 快照数据（完整的 Prompt 状态）
+  snapshot: {
+    title: string;
+    description?: string;
+    positive: PromptFragment[];
+    negative: PromptFragment[];
+    params: AIParameter[];
+    tags: string[];
+  };
+  
+  // 生成的完整字符串
+  fullString: {
+    midjourney: string;
+    stableDiffusion: string;
+  };
+  
+  // 关联图片
+  imageUrl?: string;      // 生成的结果图预览
+  imageFile?: string;     // Base64 或本地存储的图片
+  
+  // 用户评价
   metrics?: {
-    rating: number;       // 用户打分 (1-5)
+    rating?: number;      // 用户打分 (1-5)
     modelName: string;    // 使用的模型名称
-    generationTime?: number; // 生成耗时（如果有接入 API）
+    generationTime?: number; // 生成耗时
+    notes?: string;       // 用户备注
   };
   
   createdAt: number;

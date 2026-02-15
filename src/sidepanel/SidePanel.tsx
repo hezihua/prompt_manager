@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Plus, Search, Filter, Star, Clock } from 'lucide-react';
-import type { PromptProject } from '@/types/prompt';
+import type { PromptProject, PromptSnapshot } from '@/types/prompt';
 import { storage } from '@/utils/storage';
+import { VersionManager } from '@/utils/version-manager';
 import { PromptCard } from '@/components/PromptCard';
 import { PromptEditor } from '@/components/PromptEditor';
+import { TimelineView } from '@/components/TimelineView';
+import { CompareView } from '@/components/CompareView';
 
 type SortBy = 'recent' | 'starred' | 'title';
 
@@ -15,6 +18,12 @@ export const SidePanel: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [showEditor, setShowEditor] = useState(false);
   const [editingProjectId, setEditingProjectId] = useState<string | undefined>();
+  const [showTimeline, setShowTimeline] = useState(false);
+  const [timelineProjectId, setTimelineProjectId] = useState<string | undefined>();
+  const [compareSnapshots, setCompareSnapshots] = useState<{
+    snapshot1: PromptSnapshot;
+    snapshot2: PromptSnapshot;
+  } | null>(null);
 
   // 加载项目列表
   const loadProjects = async () => {
@@ -116,6 +125,34 @@ export const SidePanel: React.FC = () => {
     await loadProjects();
   };
 
+  // 查看版本历史
+  const handleViewHistory = (project: PromptProject) => {
+    setTimelineProjectId(project.id);
+    setShowTimeline(true);
+  };
+
+  // 恢复版本
+  const handleRestore = async (snapshotId: string) => {
+    if (!timelineProjectId) return;
+
+    if (!confirm('确定要恢复到此版本吗？当前状态会自动保存为备份。')) return;
+
+    try {
+      await VersionManager.restoreFromSnapshot(timelineProjectId, snapshotId);
+      await loadProjects();
+      setShowTimeline(false);
+      alert('恢复成功！');
+    } catch (error) {
+      console.error('Failed to restore snapshot:', error);
+      alert('恢复失败，请重试');
+    }
+  };
+
+  // 对比版本
+  const handleCompare = (snapshot1: PromptSnapshot, snapshot2: PromptSnapshot) => {
+    setCompareSnapshots({ snapshot1, snapshot2 });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* 头部 */}
@@ -210,6 +247,7 @@ export const SidePanel: React.FC = () => {
                 onDelete={handleDelete}
                 onToggleStar={handleToggleStar}
                 onEdit={handleEdit}
+                onViewHistory={handleViewHistory}
               />
             ))}
           </div>
@@ -229,6 +267,43 @@ export const SidePanel: React.FC = () => {
           projectId={editingProjectId}
           onClose={handleCloseEditor}
           onSave={handleSave}
+        />
+      )}
+
+      {/* 版本历史模态框 */}
+      {showTimeline && timelineProjectId && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+            {/* 头部 */}
+            <div className="px-6 py-4 border-b flex items-center justify-between">
+              <h2 className="text-xl font-bold text-gray-800">版本历史</h2>
+              <button
+                onClick={() => setShowTimeline(false)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            {/* 内容 */}
+            <div className="flex-1 overflow-y-auto p-6">
+              <TimelineView
+                projectId={timelineProjectId}
+                onRestore={handleRestore}
+                onCompare={handleCompare}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 版本对比模态框 */}
+      {compareSnapshots && (
+        <CompareView
+          snapshot1={compareSnapshots.snapshot1}
+          snapshot2={compareSnapshots.snapshot2}
+          onClose={() => setCompareSnapshots(null)}
         />
       )}
     </div>

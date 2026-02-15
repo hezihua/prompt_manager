@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { X, Save, Eye } from 'lucide-react';
+import { X, Save, Eye, Image as ImageIcon } from 'lucide-react';
 import type { PromptProject, PromptFragment, AIParameter } from '@/types/prompt';
 import { storage } from '@/utils/storage';
 import { PromptBuilder, generateId } from '@/utils/prompt-builder';
+import { VersionManager } from '@/utils/version-manager';
 import { TagEditor } from '@/components/TagEditor';
 import { TagLibrary } from '@/components/TagLibrary';
+import { ImageUpload } from '@/components/ImageUpload';
 
 interface PromptEditorProps {
   projectId?: string; // 如果提供，则是编辑模式；否则是新建模式
@@ -23,9 +25,10 @@ export const PromptEditor: React.FC<PromptEditorProps> = ({
   const [negativeFragments, setNegativeFragments] = useState<PromptFragment[]>([]);
   const [parameters, setParameters] = useState<AIParameter[]>([]);
   const [tags, setTags] = useState<string[]>([]);
-  const [showLibrary, setShowLibrary] = useState(false);
   const [loading, setLoading] = useState(false);
   const [previewMode, setPreviewMode] = useState<'midjourney' | 'stable-diffusion'>('midjourney');
+  const [snapshotImage, setSnapshotImage] = useState<string | undefined>();
+  const [snapshotNotes, setSnapshotNotes] = useState('');
 
   // 加载现有项目（编辑模式）
   useEffect(() => {
@@ -90,6 +93,16 @@ export const PromptEditor: React.FC<PromptEditorProps> = ({
         await storage.updateProject(projectId, project);
       } else {
         await storage.addProject(project);
+      }
+
+      // 创建版本快照（如果是编辑模式且有变化）
+      if (projectId) {
+        await VersionManager.createSnapshot(
+          project,
+          snapshotImage,
+          undefined,
+          snapshotNotes || '保存时自动创建'
+        );
       }
 
       onSave();
@@ -241,6 +254,33 @@ export const PromptEditor: React.FC<PromptEditorProps> = ({
                     {getPreview() || '暂无内容'}
                   </div>
                 </div>
+
+                {/* 版本快照（仅编辑模式） */}
+                {projectId && (
+                  <div className="card">
+                    <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-2 mb-3">
+                      <ImageIcon size={18} />
+                      关联图片（可选）
+                    </h3>
+                    <ImageUpload
+                      value={snapshotImage}
+                      onChange={setSnapshotImage}
+                      onRemove={() => setSnapshotImage(undefined)}
+                    />
+                    <div className="mt-3">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        快照备注
+                      </label>
+                      <input
+                        type="text"
+                        value={snapshotNotes}
+                        onChange={(e) => setSnapshotNotes(e.target.value)}
+                        placeholder="记录这次修改的目的..."
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* 右侧：标签库 */}

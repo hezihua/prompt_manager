@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { X, Plus, GripVertical } from 'lucide-react';
 import type { PromptFragment, FragmentType } from '@/types/prompt';
 import {
