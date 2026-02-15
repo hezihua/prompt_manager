@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试 Prompt - AI Prompt 管理器</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #667eea;
+            margin-top: 30px;
+        }
+        .prompt-box {
+            background: #f7fafc;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        .highlight {
+            background: #fef5e7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .instruction {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .instruction strong {
+            color: #2e7d32;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        .emoji {
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 AI Prompt 测试页面</h1>
+        <p>这个页面包含了一些示例 Prompt，你可以用来测试<strong>「AI Prompt 管理器」</strong>扩展的功能。</p>
+
+        <div class="instruction">
+            <strong>📝 如何测试：</strong>
+            <ol>
+                <li>选中下面的任意 Prompt 文本</li>
+                <li>右键点击选中的文本</li>
+                <li>选择「<strong>保存为 Prompt</strong>」</li>
+                <li>查看浏览器右上角的通知</li>
+                <li>按 <code>Ctrl+Shift+P</code> 打开侧边栏查看</li>
+            </ol>
+        </div>
+
+        <h2>🌟 示例 1：简单的人物 Prompt</h2>
+        <div class="prompt-box">
+masterpiece, best quality, 1girl, solo, beautiful, long hair, smile, looking at viewer
+        </div>
+        <p><span class="emoji">👆</span> 选中上面这段文字，右键保存试试！</p>
+
+        <h2>🎭 示例 2：复杂的场景 Prompt</h2>
+        <div class="prompt-box">
+highly detailed, cinematic lighting, fantasy landscape, ancient castle on mountain peak, dramatic clouds, sunset, god rays, volumetric lighting, 8k uhd, photorealistic
+        </div>
+
+        <h2>🌸 示例 3：动漫风格 Prompt</h2>
+        <div class="prompt-box">
+anime style, cute girl, kawaii, pastel colors, cherry blossom, spring season, soft lighting, dreamy atmosphere, studio ghibli style
+        </div>
+
+        <h2>🤖 示例 4：赛博朋克风格</h2>
+        <div class="prompt-box">
+cyberpunk, neon city, futuristic, rain, reflections, holographic displays, night scene, blade runner style, cinematic composition
+        </div>
+
+        <h2>🎨 示例 5：艺术风格 Prompt</h2>
+        <div class="prompt-box">
+oil painting, impressionism, claude monet style, water lilies, garden scene, soft brush strokes, vibrant colors, masterpiece
+        </div>
+
+        <h2>📸 示例 6：摄影风格 Prompt</h2>
+        <div class="prompt-box">
+professional photography, portrait, shallow depth of field, bokeh, golden hour lighting, canon eos r5, 85mm f1.4, sharp focus
+        </div>
+
+        <hr style="margin: 40px 0; border: none; border-top: 2px solid #eee;">
+
+        <div class="instruction" style="background: #e3f2fd;">
+            <strong>💡 使用技巧：</strong>
+            <ul>
+                <li><strong>搜索：</strong>在侧边栏顶部输入关键词搜索</li>
+                <li><strong>收藏：</strong>点击 Prompt 卡片右上角的星星图标</li>
+                <li><strong>复制：</strong>点击卡片右下角的复制图标，自动复制到剪贴板</li>
+                <li><strong>删除：</strong>点击卡片右下角的垃圾桶图标</li>
+                <li><strong>排序：</strong>使用顶部的排序按钮（最近、收藏、标题）</li>
+            </ul>
+        </div>
+
+        <div style="margin-top: 30px; text-align: center; color: #666;">
+            <p><strong>AI Prompt 管理器 v0.1.0</strong></p>
+            <p>你的 AI 创作助手 🚀</p>
+        </div>
+    </div>
+</body>
+</html>
