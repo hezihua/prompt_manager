@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Prompt 管理器 - 演示界面</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 1200px;
+            padding: 40px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        .icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+        h1 {
+            font-size: 32px;
+            color: #1f2937;
+            font-weight: 700;
+        }
+        .subtitle {
+            color: #6b7280;
+            font-size: 16px;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        .feature {
+            padding: 24px;
+            background: #f9fafb;
+            border-radius: 12px;
+            border: 2px solid #e5e7eb;
+        }
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+        .feature-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+        .feature-desc {
+            color: #6b7280;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .demo-ui {
+            background: #1f2937;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 30px;
+        }
+        .prompt-card {
+            background: #374151;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            color: white;
+        }
+        .prompt-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .tag {
+            background: #667eea;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+        .cta {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            color: white;
+        }
+        .cta h2 {
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+        .cta p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="icon">🎨</div>
+            <div>
+                <h1>AI Prompt 管理器</h1>
+                <p class="subtitle">专业的 AI 绘图 Prompt 管理工具</p>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">📝</div>
+                <div class="feature-title">可视化编辑器</div>
+                <div class="feature-desc">拖拽排序、权重调节、40+ 预设标签库，让 Prompt 编辑更高效</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📸</div>
+                <div class="feature-title">版本控制系统</div>
+                <div class="feature-desc">自动快照、时间轴视图、版本对比，追踪每个 Prompt 的优化历程</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">⚙️</div>
+                <div class="feature-title">AI 参数编辑</div>
+                <div class="feature-desc">支持 Midjourney、Stable Diffusion、DALL-E 多种模型参数</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">💾</div>
+                <div class="feature-title">数据管理</div>
+                <div class="feature-desc">JSON/CSV 导出导入，数据本地存储，隐私安全有保障</div>
+            </div>
+        </div>
+
+        <div class="demo-ui">
+            <div class="prompt-card">
+                <div class="prompt-title">✨ 赛博朋克城市夜景</div>
+                <div class="tags">
+                    <span class="tag">cyberpunk city</span>
+                    <span class="tag">neon lights</span>
+                    <span class="tag">night scene</span>
+                    <span class="tag">ultra detailed</span>
+                </div>
+            </div>
+            <div class="prompt-card">
+                <div class="prompt-title">🌸 唯美少女肖像</div>
+                <div class="tags">
+                    <span class="tag">anime girl</span>
+                    <span class="tag">detailed face</span>
+                    <span class="tag">soft lighting</span>
+                </div>
+            </div>
+            <div class="prompt-card">
+                <div class="prompt-title">🏔️ 史诗级风景</div>
+                <div class="tags">
+                    <span class="tag">epic landscape</span>
+                    <span class="tag">mountains</span>
+                    <span class="tag">dramatic sky</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="cta">
+            <h2>🚀 立即开始使用</h2>
+            <p>管理你的 AI 绘图 Prompt，提升创作效率</p>
+        </div>
+    </div>
+</body>
+</html>
